@@ -3,12 +3,12 @@ import sys
 import os
 import sentencepiece as spm
 import config_task3 as cfg
-from task2_model import GPTClassifier
+from gpt_model import GPTClassifier
 
 
 def load_tokenizer():
     sp = spm.SentencePieceProcessor()
-    sp.load("model_hindi.model")
+    sp.load("../models/tokenizer/model_hindi.model")
     return sp
 
 
@@ -22,12 +22,12 @@ def load_model():
         num_classes = cfg.NUM_CLASSES
     ).to(cfg.DEVICE)
 
-    if not os.path.exists("gpt_classifier_best.pt"):
-        raise FileNotFoundError("gpt_classifier_best.pt not found. Train Task 3 first.")
+    if not os.path.exists("../models/gpt_classifier_best.pt"):
+        raise FileNotFoundError("../models/gpt_classifier_best.pt not found. Train Task 3 first.")
 
-    model.load_state_dict(torch.load("gpt_classifier_best.pt", map_location=cfg.DEVICE))
+    model.load_state_dict(torch.load("../models/gpt_classifier_best.pt", map_location=cfg.DEVICE))
     model.eval()
-    print("Model loaded from gpt_classifier_best.pt")
+    print("Model loaded from ../models/gpt_classifier_best.pt")
     return model
 
 
@@ -70,7 +70,7 @@ def load_texts_from_file(filepath):
 
 
 
-def save_outputs(results, output_path="classification_output.txt"):
+def save_outputs(results, output_path="../results/classification_output.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("=" * 60 + "\n")
         for i, (text, label_id, label_name, probs) in enumerate(results, 1):
@@ -96,11 +96,11 @@ if __name__ == "__main__":
 
     if len(sys.argv) >= 2:
         texts       = load_texts_from_file(sys.argv[1])
-        output_file = sys.argv[2] if len(sys.argv) >= 3 else "classification_output.txt"
+        output_file = sys.argv[2] if len(sys.argv) >= 3 else "../results/classification_output.txt"
     else:
         print("No input file provided. Using default texts.")
         texts       = DEFAULT_TEXTS
-        output_file = "classification_output.txt"
+        output_file = "../results/classification_output.txt"
 
     sp    = load_tokenizer()
     model = load_model()

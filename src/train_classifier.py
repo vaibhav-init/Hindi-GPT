@@ -10,7 +10,7 @@ import random
 
 import config_task3 as cfg
 
-from task1 import (
+from tokenizer import (
     load_corpus_file,
     load_classification_data,
     split_classification,
@@ -18,7 +18,7 @@ from task1 import (
     load_tokenizer
 )
 
-from task2_model import GPTClassifier
+from gpt_model import GPTClassifier
 
 
 def set_seed(seed):
@@ -72,7 +72,7 @@ def build_classifier():
 
 model = build_classifier()
 try:
-    model.backbone.load_state_dict(torch.load("gpt_hindi_best.pt"), strict=False)
+    model.backbone.load_state_dict(torch.load("../models/gpt_hindi_best.pt"), strict=False)
     print("Loaded pretrained GPT backbone weights")
 except:
     print("No pretrained weights found (training from scratch)")
@@ -184,7 +184,7 @@ def train_classifier(model, train_loader, val_loader):
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             counter = 0
-            torch.save(model.state_dict(), "gpt_classifier_best.pt")
+            torch.save(model.state_dict(), "../models/gpt_classifier_best.pt")
             print("Best model saved")
         else:
             counter += 1
@@ -195,7 +195,7 @@ def train_classifier(model, train_loader, val_loader):
             break
 
     # Save final model
-    torch.save(model.state_dict(), "gpt_classifier_last.pt")
+    torch.save(model.state_dict(), "../models/gpt_classifier_last.pt")
 
     print(f"\nFinal Validation Accuracy: {best_val_acc:.4f}")
 
@@ -260,7 +260,7 @@ def get_correct_predictions(model, loader, num_samples=5):
     return results
 
 
-model.load_state_dict(torch.load("gpt_classifier_best.pt"))
+model.load_state_dict(torch.load("../models/gpt_classifier_best.pt"))
 model.to(cfg.DEVICE)
 model.eval()
 
@@ -269,7 +269,7 @@ print("Loaded best classifier model")
 
 samples = get_correct_predictions(model, val_loader_cls)
 
-with open("correct_predictions.txt", "w", encoding="utf-8") as f:
+with open("../results/correct_predictions.txt", "w", encoding="utf-8") as f:
     for text, label, label_name in samples:          
         f.write(f"Label: {label} ({label_name})\n")
         f.write(f"Text: {text}\n")

@@ -3,12 +3,12 @@ import sys
 import os
 import sentencepiece as spm
 import config as cfg
-from task2_model import GPTLanguageModel
+from gpt_model import GPTLanguageModel
 
 
 def load_tokenizer():
     sp = spm.SentencePieceProcessor()
-    sp.load("model_hindi.model")
+    sp.load("../models/tokenizer/model_hindi.model")
     print("Tokenizer loaded")
     return sp
 
@@ -21,12 +21,12 @@ def load_model():
         num_layers = cfg.N_LAYER
     ).to(cfg.DEVICE)
 
-    if not os.path.exists("gpt_hindi_best.pt"):
-        raise FileNotFoundError("gpt_hindi_best.pt not found. Train Task 2 first.")
+    if not os.path.exists("../models/gpt_hindi_best.pt"):
+        raise FileNotFoundError("../models/gpt_hindi_best.pt not found. Train Task 2 first.")
 
-    model.load_state_dict(torch.load("gpt_hindi_best.pt", map_location=cfg.DEVICE))
+    model.load_state_dict(torch.load("../models/gpt_hindi_best.pt", map_location=cfg.DEVICE))
     model.eval()
-    print("Model loaded from gpt_hindi_best.pt")
+    print("Model loaded from ../models/gpt_hindi_best.pt")
     return model
 
 
@@ -64,7 +64,7 @@ def load_prompts_from_file(filepath):
     return prompts
 
 
-def save_outputs(results, output_path="generated_text.txt"):
+def save_outputs(results, output_path="../results/generated_text.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("=" * 60 + "\n")
         f.write("  Mini Hindi-GPT — Generated Text (Task 2)\n")
@@ -88,11 +88,11 @@ if __name__ == "__main__":
 
     if len(sys.argv) >= 2:
         prompts     = load_prompts_from_file(sys.argv[1])
-        output_file = sys.argv[2] if len(sys.argv) >= 3 else "generated_text.txt"
+        output_file = sys.argv[2] if len(sys.argv) >= 3 else "../results/generated_text.txt"
     else:
         print("No prompt file provided. Using default prompts.")
         prompts     = DEFAULT_PROMPTS
-        output_file = "generated_text.txt"
+        output_file = "../results/generated_text.txt"
 
     sp    = load_tokenizer()
     model = load_model()

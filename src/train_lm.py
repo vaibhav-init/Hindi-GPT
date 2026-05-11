@@ -9,8 +9,8 @@ import os
 import matplotlib.pyplot as plt
 
 import config as cfg
-from task2_model import GPTLanguageModel
-from task1 import (
+from gpt_model import GPTLanguageModel
+from tokenizer import (
     train_tokenizer,
     load_corpus_file,
     split_corpus,
@@ -30,7 +30,7 @@ def prepare_dataloaders(corpus_path):
     texts = load_corpus_file(corpus_path)
     train_texts, val_texts = split_corpus(texts)
 
-    if os.path.exists("model_hindi.model"):
+    if os.path.exists("../models/tokenizer/model_hindi.model"):
         print("Loading existing tokenizer...")
         sp = load_tokenizer()
     else:
@@ -148,7 +148,7 @@ def train(model, train_loader, val_loader):
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             counter = 0
-            torch.save(model.state_dict(), "gpt_hindi_best.pt")
+            torch.save(model.state_dict(), "../models/gpt_hindi_best.pt")
             print("Model saved (best)")
         else:
             counter += 1
@@ -157,11 +157,11 @@ def train(model, train_loader, val_loader):
             print("Early stopping triggered")
             break
 
-    torch.save(model.state_dict(), "gpt_hindi_last.pt")
+    torch.save(model.state_dict(), "../models/gpt_hindi_last.pt")
 
     # print best model perplexity 
     print("\nFinal Evaluation on Best Model")
-    model.load_state_dict(torch.load("gpt_hindi_best.pt"))
+    model.load_state_dict(torch.load("../models/gpt_hindi_best.pt"))
     best_val_loss, best_val_ppl = evaluate(model, val_loader)
     print(f"Best Model Val Loss:        {best_val_loss:.4f}")
     print(f"Best Model Val Perplexity:  {best_val_ppl:.2f}")

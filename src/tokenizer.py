@@ -40,7 +40,7 @@ def train_tokenizer(train_texts):
 
     spm.SentencePieceTrainer.train(
         input=tmp_file,
-        model_prefix="model_hindi",
+        model_prefix="../models/tokenizer/model_hindi",
         vocab_size=5000,
         model_type="bpe",
         pad_id=0,
@@ -60,7 +60,7 @@ def train_tokenizer(train_texts):
 
 def load_tokenizer():
     sp = spm.SentencePieceProcessor()
-    sp.load("model_hindi.model")
+    sp.load("../models/tokenizer/model_hindi.model")
     print("Model Loaded!")
     return sp
 
